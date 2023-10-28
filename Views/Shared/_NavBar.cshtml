@@ -1,0 +1,35 @@
+﻿
+<div class="navbar navbar-light navbar-fixed-top" style="background-color: #229c03;">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("ECarSharing", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", style="color:white"})
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav" >
+                <li>@Html.ActionLink("Home", "Index", "Home", null,  new {style="color:white" })</li>
+                @{
+                    if (Request.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Tenant"))
+                        {
+                            <li>@Html.ActionLink("Add Vehicle", "Create", "Vehicle", null,  new {style="color:white" })</li>
+                            <li>@Html.ActionLink("My Vehicles", "MyVehicles", "Vehicle", null,  new {style="color:white" })</li>
+
+                        }
+                        else if (User.IsInRole("Renter"))
+                        {
+                            <li>@Html.ActionLink("Rent Vehicle", "Rent", "Rental", null,  new {style="color:white" })</li>
+                            <li>@Html.ActionLink("My Rentals", "MyRentals", "Rental", null,  new {style="color:white" })</li>
+                        }
+                    }
+                }
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </div>
+</div>

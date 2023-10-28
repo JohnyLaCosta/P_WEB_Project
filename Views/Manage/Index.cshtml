@@ -1,0 +1,118 @@
+﻿@model ECarSharing.Models.IndexViewModel
+@{
+    ViewBag.Title = "Manage";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div>
+    <h4>Change your account settings</h4>
+    <hr />
+    @using (Html.BeginForm("Index", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data", @id = "form" }))
+    {
+        <div class="col-md-5">
+            @if (Model.eUser.Image == null)
+            {
+                <div class="form-group">
+                    <image id="profileImage" class="profile-container" src="https://cdn2.iconfinder.com/data/icons/office-and-business-19/65/61-512.png" />
+
+                    <input id="imageUpload" type="file" name="@Html.NameFor(m => m.ImageFile)" accept="image/*" capture style="display:none" />
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <image id="profileImage" class="profile-container" src="@Url.Content(Model.eUser.Image)" />
+
+                    <input id="imageUpload" type="file" name="@Html.NameFor(m => m.ImageFile)" accept="image/*" capture style="display:none" />
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.eUser.Name, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.eUser.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.eUser.Name, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.eUser.Email, new { @class = "control-label" })
+                @Html.DisplayFor(m => m.eUser.Email, new { @class = "form-control" })
+
+            </div>
+
+            <div class="form-group">
+                @if (Model.HasPassword)
+                {
+                    @Html.ActionLink("Change your password", "ChangePassword")
+                }
+                else
+                {
+                    @Html.ActionLink("Create", "SetPassword")
+                }
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <h3>Mobility Card</h3>
+            <div class="form-group">
+                @Html.LabelFor(m => m.eUser.MobilityCard.NCard, new { @class = "control-label" })
+                @Html.EditorFor(m => m.eUser.MobilityCard.NCard, new { htmlAttributes = new { @class = "form-control", @id = "nCard"} })
+                @Html.ValidationMessageFor(m => m.eUser.MobilityCard.NCard, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.eUser.MobilityCard.Cvc, new { @class = "control-label" })
+
+                @Html.TextBoxFor(m => m.eUser.MobilityCard.Cvc, new { @class = "form-control", id = "cvc" })
+                @Html.ValidationMessageFor(m => m.eUser.MobilityCard.Cvc, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.eUser.MobilityCard.Validity, new { @class = "control-label" })
+                @Html.EditorFor(m => m.eUser.MobilityCard.Validity, new { htmlAttributes = new { @class = "form-control", @id = "validity" } })
+                @Html.ValidationMessageFor(m => m.eUser.MobilityCard.Validity, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-0 col-md-12" style="margin-top:20px">
+                <input type="submit" class="btn btn-default" value="Save" id="submit" />
+            </div>
+        </div>
+
+        @Html.HiddenFor(m => m.eUser.Id);
+        @Html.HiddenFor(m => m.eUser.Email);
+    }
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#imageUpload").change(function () {
+                var fs = this.files
+                var reader = new FileReader
+
+                reader.readAsDataURL(fs[0])
+
+                reader.onload = function (_file) {
+                    document.getElementById("profileImage").src = _file.target.result
+                }
+
+            })
+
+            
+            var im = new Inputmask("999")
+            im.mask(document.getElementById("cvc"))
+
+            im = new Inputmask("99/99/9999")
+            im.mask(document.getElementById("validity"))
+
+        })
+
+        $("#profileImage").click(function (e) {
+            $("#imageUpload").click();
+        });
+
+    </script>
+}

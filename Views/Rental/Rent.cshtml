@@ -1,0 +1,446 @@
+﻿@model ECarSharing.ViewModels.RentalViewModel
+
+@{
+    ViewBag.Title = "Rent";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@using (Html.BeginForm("Rent", "Rental", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div style="text-align:center;margin-top:40px;">
+        <span class="stepx"></span>
+        <span class="stepx"></span>
+        <span class="stepx"></span>
+    </div>
+
+    <div class="tabx" style="margin-top: 50px; border: solid 2px #808080; border-radius:3px;">
+        <div style="padding: 20px; background-color: #F0F0F0; box-shadow: 10px 10px 5px grey;">
+            <h3>Choose Date</h3>
+            <div class="container" style="margin-bottom:100px; border-bottom: solid 2px #808080; width:100%">
+                <div class="col-md-3 col-sm-3 col-xs-3 col-lg-2" style="margin-right: 20px;">
+                    <div class="form-group">
+                        <div class="input-group date" id="initData" typeof="datetime-local">
+                            @Html.EditorFor(model => model.rental.PlannedInit, new { htmlAttributes = new { @class = "form-control", @id = "init" } })
+                            <span class="input-group-addon glyphicon glyphicon-calendar " style="top:0px"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-3 col-xs-3 col-lg-2">
+                    <div class="form-group">
+                        <div class="input-group date" id="endData">
+                            @Html.EditorFor(model => model.rental.PlannedEnd, new { htmlAttributes = new { @class = "form-control", @id = "end" } })
+                            <span class="input-group-addon glyphicon glyphicon-calendar" style="top:0px"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-3 col-xs-3 col-lg-2">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <button type="button" class="btn btn-default js-choose">Choose</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-3 col-xs-3 col-lg-2" id="rentInfo" style="background-color: #229c03; color: white; text-align:center; border:none; border-radius: 5px">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.rental.TotalCost, new { @class = "col-md-3 control-label" })
+                        @Html.Label("Empty", new { @class = "control-label", id = "totalCost", style = "font-weight: normal;" })
+                    </div>
+                </div>
+
+
+            </div>
+
+            <h3>Choose Vehicle</h3>
+            <table id="vehicles" class="table table-striped table-bordered table-hover" cellspacing="0" align="center" width="100%" style="background-color:white">
+                <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Seats</th>
+                        <th>Power CV</th>
+                        <th>Battery kWh</th>
+                        <th>Dollar/Hour</th>
+                        <th>Local</th>
+                        <th>Description</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+
+            <div class="modal" id="myModal" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close-modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="carousel slide" id="myCarousel">
+                                <div class="carousel-inner" id="carousel-content">
+                                </div>
+
+                                <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                                    <span class="glyphicon glyphicon-chevron-left"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                                    <span class="glyphicon glyphicon-chevron-right"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="tabx">
+        <h3>Pay</h3>
+        <div class="form-group" style="background-color: #E0E0E0; padding: 50px; border: 1px solid #707070; border-radius: 5px; box-shadow: 10px 10px 5px grey;">
+            <div class="col-md-5" style="padding-left: 50px; padding-right:50px; background-color:  #F0F0F0; border-radius: 5px;">
+                <h1>Rent Informations</h1>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.rental.vehicle.Name, new { @class = "control-label" }):
+                    @Html.Label("Empty", new { @class = "control-label", id = "toName", style = "font-weight: normal;" })
+
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.rental.TotalCost, new { @class = "control-label" }):
+                    @Html.Label("Empty", new { @class = "control-label", id = "toCost", style = "font-weight: normal;" })
+                </div>
+            </div>
+
+            <div class="col-md-5" style="margin-top: 20px; margin-left:30px; padding-left: 150px; border-left: 1px solid #707070;">
+                <div class="form-group">
+                    <button class="btn btn-lg btn-block" onclick="showContent('myMA', 'myOA')" type="button" style="background-color:#229c03; color: white">My Mobility Account</button>
+                    <br />
+                    <div id="myMA">
+                        <div style="padding: 10px; background-color:  #F0F0F0; border-radius: 5px;">
+                            @Html.LabelFor(model => model.eUser.MobilityCard.NCard)
+                            @Html.DisplayFor(model => model.eUser.MobilityCard.NCard, new { @class = "form-control", @id = "nCard2" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-lg btn-block" onclick="showContent('myOA', 'myMA')" type="button" style="background-color:#808080; color: white">Other Mobility Account</button>
+                    <br />
+                    <div id="myOA">
+                        <div style="padding: 40px; background-color:  #F0F0F0; border-radius: 5px;">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.eUser.MobilityCard.NCard, new { @class = "col-md-2 control-label" })
+                                @Html.TextBoxFor(model => model.eUser.MobilityCard.NCard, new { @class = "form-control", id = "nCard" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.eUser.MobilityCard.Cvc, new { @class = "col-md-2 control-label" })
+                                @Html.TextBoxFor(model => model.eUser.MobilityCard.Cvc, new { @class = "form-control", id = "cvc" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.eUser.MobilityCard.Validity, new { @class = "col-md-2 control-label" })
+                                @Html.TextBox("Ola", new { @class = "form-control", @type = "date", id = "validity" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="tabx">
+        <div style="text-align:center; padding-top: 20px">
+            <div id="suc">
+                <img class="img" src="https://thumbs.gfycat.com/ShyCautiousAfricanpiedkingfisher-size_restricted.gif" alt="Success" />
+                <h2>Rent Completed!</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-offset-0 col-md-10" style="margin-top: 50px">
+        <div class="form-group">
+            <button type="button" id="prevBtn" class="btn myBtn" onclick="nextPrev(-1)">Previous</button>
+            <button type="button" id="nextBtn" class="btn myBtn" onclick="nextPrev(1)">Next</button>
+        </div>
+    </div>
+
+    @Html.HiddenFor(model => model.rental.VehicleId, new { id = "vehicleId" })
+    @Html.HiddenFor(model => model.rental.EUserId, new { id = "userId" })
+    @Html.HiddenFor(model => model.rental.vehicle.Name, new { id = "vehicleName" })
+    @Html.HiddenFor(model => model.rental.TotalCost, new { id = "tCost" })
+    @Html.HiddenFor(model => model.eUser.Id, new { id = "id" })
+    @Html.HiddenFor(model => model.eUser.Email)
+    @Html.HiddenFor(model => model.eUser.Name)
+    @Html.HiddenFor(model => model.eUser.MobilityCardId)
+    @Html.HiddenFor(model => model.eUser.EUserTypeId)
+    @Html.HiddenFor(model => model.eUser.MobilityCard.Validity, new { id = "val" })
+    @Html.HiddenFor(model => model.success, new { id = "success" })
+
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Functions/carousel-body.js"></script>
+    <script type="text/javascript">
+
+        function showContent(toShow, toHide) {
+            document.getElementById(toShow).style.display = "inline"
+            document.getElementById(toHide).style.display = "none"
+        }
+
+        function show(id, name, price) {
+            var init = $("#initData").data("DateTimePicker").date()
+            var end = $("#endData").data("DateTimePicker").date()
+
+            $("#tCost").val(Math.round((Math.abs(end - init) / 36e5) * parseInt(price), 2))
+            $("#vehicleId").val(id)
+            $("#vehicleName").val(name)
+            $("#userId").val($("input[id$=id]").val())
+
+            $("#totalCost").text($("input[id$=tCost]").val() + " $")
+            document.getElementById("rentInfo").style.display = "inline"
+        }
+
+        function reset() {
+            $("#vehicleId").val(null)
+            document.getElementById("rentInfo").style.display = "none"
+        }
+
+        var currentTab = 0
+
+
+        function check() {
+            if ($("input[id$=success]").val()) {
+                currentTab = 2;
+            }
+        }
+
+        function showTab(n) {
+            var x = document.getElementsByClassName("tabx")
+
+            x[n].style.display = "block";
+
+            if (n == 0) {
+                if ($("input[id$=vehicleId]").val() == 0)
+                    reset()
+
+                document.getElementById("prevBtn").style.display = "none"
+            }
+            else {
+                document.getElementById("prevBtn").style.display = "inline"
+
+                if (n == 1) {
+                    $("#toCost").text($("input[id$=tCost]").val() + " $")
+                    $("#toName").text($("input[id$=vehicleName]").val())
+                    document.getElementById("myMA").style.display = "none"
+                    document.getElementById("myOA").style.display = "none"
+                }
+            }
+
+            if (n == (x.length - 1)) {
+                document.getElementById("prevBtn").style.display = "none"
+                document.getElementById("nextBtn").style.display = "none"
+            }
+
+            fixStepIndicator(n)
+        }
+
+
+        var validateFunctions = [firstValidate, secondValidate]
+
+        function firstValidate() {
+            if ($("#initData").data("DateTimePicker").date() == null) {
+                console.log("init")
+                return false;
+            }
+
+            if ($("#endData").data("DateTimePicker").date() == null) {
+                console.log("end")
+                return false;
+            }
+
+            if ($("input[id$=vehicleId]").val() == 0) {
+                console.log("id")
+                return false;
+            }
+
+            return true;
+        }
+
+        function secondValidate() {
+            if (document.getElementById("myMA").style.display == "inline") {
+                document.getElementById("form").submit()
+            }
+
+            if (document.getElementById("myOA").style.display == "inline") {
+                if ($("#nCard").val().length != 16) {
+                    console.log("nCard")
+                }
+
+                if ($("#cvc").val().length != 3) {
+                    console.log("cvc")
+                }
+
+                if ($("#validity").val().date() == null) {
+                    console.log("validity")
+                }
+
+                $("#val").val($("#validity").val())
+                document.getElementById("form").submit()
+            }
+
+            return false;
+        }
+
+        function nextPrev(n) {
+            if (validateFunctions.length > currentTab) {
+                if (!validateFunctions[currentTab]()) {
+                    return false;
+                }
+
+                var x = document.getElementsByClassName("tabx")
+
+                x[currentTab].style.display = "none"
+
+                currentTab = currentTab + n
+
+                if (currentTab >= x.length) {
+                    document.getElementById("form").submit()
+                    return false
+                }
+
+                showTab(currentTab)
+            } else if (currentTab + n < currentTab) {
+                var x = document.getElementsByClassName("tabx")
+
+                x[currentTab].style.display = "none"
+
+                currentTab = currentTab + n
+
+                showTab(currentTab)
+            }
+        }
+
+        function fixStepIndicator(n) {
+            var x = document.getElementsByClassName("stepx")
+
+            for (var i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace("active", "")
+            }
+
+            x[n].className += " active"
+        }
+
+
+        //showTab(currentTab)
+
+
+        $(document).ready(function () {
+            check()
+
+            showTab(currentTab)
+
+            var table = $("#vehicles").DataTable({
+                destroy: true,
+                clear: true,
+                responsive: true
+            })
+
+            $('#initData').datetimepicker({
+                format: "YYYY-MM-DD HH:mm"
+            })
+
+            $("#initData").on("dp.change", function (e) {
+                $('#endData').data("DateTimePicker").minDate(e.date)
+                reset()
+                table.clear().draw()
+            });
+
+
+            $('#endData').datetimepicker({
+                useCurrent: false,
+                format: "YYYY-MM-DD HH:mm"
+            });
+
+            $("#endData").on("dp.change", function (e) {
+                $('#initData').data("DateTimePicker").maxDate(e.date)
+                reset()
+                table.clear().draw()
+            });
+
+            $(".js-choose").on("click", function () {
+                reset()
+
+                table = $("#vehicles").DataTable({
+                    destroy: true,
+                    clear: true,
+                    responsive: true,
+                    ajax: {
+                        url: "/api/vehicle/data",
+                        type: "GET",
+                        contentType: "application/json",
+                        data: {
+                            init: $("#initData").data("DateTimePicker").date().format("YYYY-MM-DD HH:mm"),
+                            end: $("#endData").data("DateTimePicker").date().format("YYYY-MM-DD HH:mm")
+                        },
+                        dataSrc: ""
+                    },
+                    columns: [
+                        {
+                            data: "Name",
+                            render: function (data, type, vehicle) {
+                                return '<a href="#" onClick = "getImages(\'' + vehicle.Id + '\')" data-toggle="modal" data-target="#myModal">' + data + '</a>';
+                            }
+                        },
+                        {
+                            data: "Seats"
+                        },
+                        {
+                            data: "Power"
+                        },
+                        {
+                            data: "Battery"
+                        },
+                        {
+                            data: "Price_H"
+                        },
+                        {
+                            data: "zone.Name"
+                        },
+                        {
+                            data: "Description"
+                        },
+                        {
+                            render: function (data, type, vehicle) {
+                                return '<a href="#" onClick="show(\''
+                                    + vehicle.Id
+                                    + "','"
+                                    + vehicle.Name
+                                    + "','"
+                                    + vehicle.Price_H
+                                    + '\')" >Rent</a>';
+                            }
+                        }
+                    ]
+                });
+
+            })
+
+            if ($("#initData").data("DateTimePicker").date() != null && $("#endData").data("DateTimePicker").date() != null) {
+                $(".js-choose").click()
+            }
+        })
+    </script>
+}

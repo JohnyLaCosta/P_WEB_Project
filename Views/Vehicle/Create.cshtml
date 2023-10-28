@@ -1,0 +1,95 @@
+﻿@model ECarSharing.ViewModels.VehicleViewModel
+
+@{
+    ViewBag.Title = "Create";
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm("Create", "Vehicle", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken();
+
+    <div class="form-horizontal">
+        <h4>Vehicle</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Name, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.vehicle.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Name, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Price_H, htmlAttributes: new { @class = "control-label", @placeholder = "€" })
+                @Html.EditorFor(model => model.vehicle.Price_H, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Price_H, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Power, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.vehicle.Power, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Power, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Battery, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.vehicle.Battery, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Battery, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Seats, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.vehicle.Seats, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Seats, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Description, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.vehicle.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="col-md-4" id="imagesPreview">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.ZoneId, htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.vehicle.ZoneId, new SelectList(Model.zones, "Id", "Name"), "Select Location", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.vehicle.ZoneId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Images for vehicle (Max 3)", htmlAttributes: new { @class = "control-label" })
+                <hr />
+                <div class="container">
+                    <div class="row" style="width:1000px">
+                        <div class="col-sm-3 col-md-3 col-xs-3 col-lg-3 imgUp">
+                            <div class="imagePreview"></div>
+                            <label class="btn btn-primary" style="display:block; border-radius: 0px; box-shadow:0px 4px 6px 2px rgba(0,0,0,0.2); margin-top:-5px;">
+                                Upload<input type="file" class="uploadFile img" value="Upload Photo" accept="image/*"  style="width: 0px;height: 0px;overflow: hidden;">
+                            </label>
+                        </div>
+                        <div style="font-size: 30px;" class="before">
+                            <i class="fa fa-plus-circle fa-lg imgAdd"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-0 col-md-10" style="padding-top:10px">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/Functions/image-updoader1.0.js"></script>
+}

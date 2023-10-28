@@ -1,0 +1,113 @@
+﻿@model ECarSharing.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Create a new account.</h4>
+    <hr />
+    <div class="col-md-4">
+        <h3 style="text-align:center">User Info</h3>
+        <hr />
+
+        <div class="form-group">
+            <image id="profileImage" class="profile-container" src="https://cdn2.iconfinder.com/data/icons/office-and-business-19/65/61-512.png" />
+            <input id="imageUpload" type="file" name="@Html.NameFor(m => m.FileImage)" accept="image/*" capture style="display:none" />
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.User.Name, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.User.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.User.Name, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.User.Email, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.User.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.User.Email, "", new { @class = "text-danger" })
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password, new { @class = "control-label" })
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.User.EUserTypeId, new { @class = "control-label" })
+            @Html.DropDownListFor(m => m.User.EUserTypeId, new SelectList(Model.EUserTypes, "Id", "Name"), "Select User Type", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.User.EUserTypeId, "", new { @class = "text-danger" })
+
+        </div>
+
+    </div>
+    <div class="col-md-4" style="border-right: 3px solid #808080; height: 400px; right: 250px; top:80px"></div>
+
+    <div class="col-md-4">
+        <h3 style="text-align:center">Mobility Card</h3>
+        <hr />
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.User.MobilityCard.NCard, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.User.MobilityCard.NCard, new { @class = "form-control"})
+            @Html.ValidationMessageFor(m => m.User.MobilityCard.NCard, "", new { @class = "text-danger" })
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.User.MobilityCard.Cvc, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.User.MobilityCard.Cvc, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.User.MobilityCard.Cvc, "", new { @class = "text-danger" })
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.User.MobilityCard.Validity, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.User.MobilityCard.Validity, "{0:dd/MM/yyyy}", new { @class = "form-control", @type = "date" })
+            @Html.ValidationMessageFor(m => m.User.MobilityCard.Validity, "", new { @class = "text-danger" })
+
+        </div>
+
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-md-offset-0 col-md-12" style="margin-top:20px">
+            <input type="submit" class="btn btn-default" value="Register" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+ 
+    <script type="text/javascript">
+        $("#profileImage").click(function (e) {
+            $("#imageUpload").click();
+        });
+        $(document).ready(function () {
+
+
+            $("#imageUpload").change(function () {
+                var fs = this.files
+                var reader = new FileReader
+
+                reader.readAsDataURL(fs[0])
+
+                reader.onload = function (_file) {
+                    document.getElementById("profileImage").src = _file.target.result
+                }
+                
+            })
+
+        })
+
+    </script>
+
+}

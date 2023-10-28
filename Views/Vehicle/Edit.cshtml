@@ -1,0 +1,86 @@
+﻿@model ECarSharing.ViewModels.VehicleViewModel
+
+@{
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+}
+
+@using (Html.BeginForm("Edit", "Vehicle", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="form-horizontal">
+        <h2>Edit Vehicle</h2>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="col-md-5">
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Name, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.vehicle.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Name, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Price_H, htmlAttributes: new { @class = "control-label", @placeholder = "€" })
+                @Html.EditorFor(model => model.vehicle.Price_H, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Price_H, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.vehicle.Description, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.vehicle.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vehicle.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="col-md-5" id="imagesPreview">
+            <div class="form-group">
+                @Html.Label("Images for vehicle (Max. 3)", htmlAttributes: new { @class = "control-label" })
+                <p>Note: Add images will remove previous images!</p>
+            </div>
+            <hr />
+            <div class="container">
+                <div class="row" style="width:1000px">
+                    <div class="col-sm-3 col-md-3 col-xs-3 col-lg-3 imgUp">
+                        <div class="imagePreview"></div>
+                        <label class="btn btn-primary" style="display:block; border-radius: 0px; box-shadow:0px 4px 6px 2px rgba(0,0,0,0.2); margin-top:-5px;">
+                            Upload<input type="file" class="uploadFile img" name="imageFiles" accept="image/*" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;">
+                        </label>
+                    </div>
+                    <div style="font-size: 30px;" class="before">
+                        <i class="fa fa-plus-circle fa-lg imgAdd"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @Html.HiddenFor(m => m.vehicle.Id)
+
+
+        <div class="form-group">
+            <div class="col-md-offset-0 col-md-10" style="padding-top:10px">
+                <input type="submit" value="Apply" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script src="~/Scripts/Functions/image-updoader1.0.js"></script>
+    @*<script>
+            $(".uploadFile").on("change", function () {
+                var files = this.files;
+                var reader = new FileReader(); // instance of the FileReader
+
+                reader.readAsDataURL(files[0]);
+
+                reader.onloadend = function () {
+                    console.log(files[0]);
+                }
+
+            })
+
+        </script>*@
+}
